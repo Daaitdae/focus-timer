@@ -1,22 +1,40 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>25분 타이머</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>집중 타이머</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Arial', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
-      background: #f5f5f5;
+      margin: 0;
+      background: #f4f4f9;
     }
     .timer {
       font-size: 4rem;
-      margin-bottom: 1rem;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .controls {
+      margin-bottom: 20px;
+    }
+    button {
+      font-size: 1.2rem;
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: white;
+    }
+    button:disabled {
+      background-color: #ccc;
     }
     .message {
       font-size: 1.2rem;
@@ -26,11 +44,21 @@
 </head>
 <body>
   <div class="timer" id="timer">25:00</div>
-  <div class="message">집중 시간을 시작합니다…</div>
+  <div class="controls">
+    <button id="startStopBtn">시작</button>
+    <button id="resetBtn" disabled>초기화</button>
+  </div>
+  <div class="message" id="message">집중 시간을 시작합니다…</div>
 
   <script>
     let totalSeconds = 25 * 60;
+    let timer;
+    let isRunning = false;
+
     const timerEl = document.getElementById("timer");
+    const startStopBtn = document.getElementById("startStopBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const messageEl = document.getElementById("message");
 
     function updateTimer() {
       const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
@@ -40,12 +68,32 @@
         totalSeconds--;
       } else {
         clearInterval(timer);
-        window.location.href = "review.html"; // 타이머 끝나면 review.html로 이동
+        messageEl.textContent = "집중 시간이 끝났습니다!";
+        window.location.href = "review.html"; // 회고 페이지로 이동
       }
     }
 
-    updateTimer(); // 초기 실행
-    const timer = setInterval(updateTimer, 1000);
+    startStopBtn.addEventListener("click", () => {
+      if (isRunning) {
+        clearInterval(timer);
+        startStopBtn.textContent = "시작";
+      } else {
+        timer = setInterval(updateTimer, 1000);
+        startStopBtn.textContent = "일시 정지";
+      }
+      isRunning = !isRunning;
+      resetBtn.disabled = false;
+    });
+
+    resetBtn.addEventListener("click", () => {
+      clearInterval(timer);
+      totalSeconds = 25 * 60;
+      timerEl.textContent = "25:00";
+      messageEl.textContent = "집중 시간을 시작합니다…";
+      startStopBtn.textContent = "시작";
+      isRunning = false;
+      resetBtn.disabled = true;
+    });
   </script>
 </body>
 </html>
