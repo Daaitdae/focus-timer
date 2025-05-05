@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>25분 타이머</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #f5f5f5;
+    }
+    .timer {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+    .message {
+      font-size: 1.2rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="timer" id="timer">25:00</div>
+  <div class="message">집중 시간을 시작합니다…</div>
+
+  <script>
+    let totalSeconds = 25 * 60;
+    const timerEl = document.getElementById("timer");
+
+    function updateTimer() {
+      const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+      const seconds = String(totalSeconds % 60).padStart(2, '0');
+      timerEl.textContent = `${minutes}:${seconds}`;
+      if (totalSeconds > 0) {
+        totalSeconds--;
+      } else {
+        clearInterval(timer);
+        window.location.href = "review.html"; // 타이머 끝나면 review.html로 이동
+      }
+    }
+
+    updateTimer(); // 초기 실행
+    const timer = setInterval(updateTimer, 1000);
+  </script>
+</body>
+</html>
